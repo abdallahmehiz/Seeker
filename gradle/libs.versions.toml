@@ -1,0 +1,32 @@
+[versions]
+activity-compose = "1.9.3"
+agp = "8.7.2"
+annotation = "1.9.1"
+collection = "1.4.5"
+compose-plugin = "1.6.11"
+junit = "4.13.2"
+kotlin = "2.0.21"
+kotlinx-coroutines-swing = "1.9.0"
+lifecycle-viewmodel = "2.8.7"
+navigation-compose = "2.8.0-alpha10"
+spotless = "5.7.0"
+skiko = "0.8.15"
+
+[libraries]
+activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activity-compose" }
+annotation = { module = "androidx.annotation:annotation", version.ref = "annotation" }
+collection = { module = "androidx.collection:collection", version.ref = "collection" }
+junit = { module = "junit:junit", version.ref = "junit" }
+kotlinx-coroutines-swing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "kotlinx-coroutines-swing" }
+lifecycle-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel", version.ref = "lifecycle-viewmodel" }
+navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "navigation-compose" }
+publishing = { module = "org.sonatype.central:central-publishing-maven-plugin", version = "0.6.0" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+android-library = { id = "com.android.library", version.ref = "agp" }
+kotlin-mp = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+jetbrains-compose = { id = "org.jetbrains.compose", version.ref = "compose-plugin" }
+spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
+
