@@ -1,23 +1,20 @@
+import org.jetbrains.compose.ExperimentalComposeLibrary
+
 plugins {
-    id("com.android.library")
-    kotlin("multiplatform")
-    kotlin("plugin.compose")
-    id("org.jetbrains.compose")
+    id("maven-publish")
+    alias(libs.plugins.kotlin.mp)
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.jetbrains.compose)
 }
-
-extra["PUBLISH_GROUP_ID"] = "io.github.2307vivek"
-extra["PUBLISH_VERSION"] = "1.2.2"
-extra["PUBLISH_ARTIFACT_ID"] = "seeker"
-
-apply("${rootProject.projectDir}/scripts/publish-module.gradle")
 
 android {
     namespace = "dev.vivvvek.seeker"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         minSdk = 21
-        targetSdk = 34
+        targetSdk = 35
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
@@ -38,9 +35,6 @@ android {
     }
     buildFeatures {
         compose = true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.2"
     }
 }
 
@@ -64,9 +58,13 @@ kotlin {
         val commonMain by getting
         commonMain.dependencies {
             implementation(compose.material)
-            implementation("androidx.annotation:annotation:1.8.0")
+            implementation(libs.annotation)
         }
 
+        androidUnitTest.dependencies {
+            @OptIn(ExperimentalComposeLibrary::class)
+            implementation(compose.uiTest)
+        }
         androidMain {
             dependsOn(commonMain)
             dependencies {
@@ -89,11 +87,28 @@ kotlin {
     }
 }
 
-val compose_ui_version: String by extra
 dependencies {
-    debugImplementation("androidx.compose.ui:ui-test-manifest:$compose_ui_version")
+    @OptIn(ExperimentalComposeLibrary::class)
+    debugImplementation(compose.uiTest)
 
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:$compose_ui_version")
-    androidTestImplementation("androidx.compose.ui:ui-test:$compose_ui_version")
+    testImplementation(libs.junit)
 }
+
+tasks.register<Jar>("sourceJar") {
+    archiveClassifier.set("sources")
+    from(android.sourceSets["main"].java.srcDirs)
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("bar") {
+            groupId = "com.github.abdallah"
+            version = "0.1.0"
+            // Place the path of your artifact here
+            artifact("$buildDir/libs/seeker-jvm.jar")
+            artifact(tasks["sourceJar"])
+        }
+    }
+}
+
+tasks["publishBarPublicationToMavenLocal"].dependsOn("jvmJar")

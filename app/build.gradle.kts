@@ -1,10 +1,10 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 
 plugins {
-    id("com.android.application")
-    kotlin("multiplatform")
-    kotlin("plugin.compose")
-    id("org.jetbrains.compose")
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.mp)
+    alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.jetbrains.compose)
 }
 
 
@@ -23,19 +23,19 @@ val targetArch = when (val osArch = System.getProperty("os.arch")) {
     else -> error("Unsupported arch: $osArch")
 }
 
-val version = "0.8.8" // or any more recent version
+val version = libs.versions.skiko.get() // libs.versions.skiko // or any more recent version
 val target = "${targetOs}-${targetArch}"
 
 android {
     namespace = "dev.vivvvek.seekerdemo"
-    compileSdk = 34
+    compileSdk = 35
 
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
 
     defaultConfig {
         applicationId = "dev.vivvvek.seekerdemo"
         minSdk = 21
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
@@ -60,9 +60,6 @@ android {
     }
     buildFeatures {
         compose = true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.2"
     }
     packagingOptions {
         resources {
@@ -96,14 +93,14 @@ kotlin {
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.runtime)
-            implementation("org.jetbrains.androidx.navigation:navigation-compose:2.7.0-alpha07")
-            implementation("androidx.lifecycle:lifecycle-viewmodel:2.8.0")
+            implementation(libs.navigation.compose)
+            implementation(libs.lifecycle.viewmodel)
         }
         androidMain {
             dependsOn(commonMain)
             dependencies {
-                implementation("androidx.activity:activity-compose:1.7.2")
-                implementation("androidx.compose.material:material:1.5.1")
+                implementation(libs.activity.compose)
+                implementation(compose.material)
                 implementation(compose.preview)
             }
         }
@@ -120,24 +117,17 @@ kotlin {
         val jvmMain by getting
         jvmMain.dependencies {
             implementation("org.jetbrains.skiko:skiko-awt-runtime-$target:$version")
-            implementation("androidx.collection:collection:1.4.0")
-            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.8.1")
-            implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.0")
+            implementation(libs.collection)
+            implementation(libs.kotlinx.coroutines.swing)
+            implementation(compose.runtime)
             implementation(compose.desktop.currentOs)
         }
         jvmMain.dependsOn(commonMain)
     }
 }
 
-val compose_ui_version: String by extra
-
 dependencies {
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:$compose_ui_version")
-    debugImplementation("androidx.compose.ui:ui-tooling:$compose_ui_version")
-    debugImplementation("androidx.compose.ui:ui-test-manifest:$compose_ui_version")
+    debugImplementation(compose.uiTooling)
 }
 
 compose.desktop {

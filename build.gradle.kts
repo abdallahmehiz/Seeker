@@ -1,25 +1,20 @@
 plugins {
-    id("com.android.application") version "8.1.4" apply false
-    id("com.android.library") version "8.1.4" apply false
-    id("org.jetbrains.kotlin.multiplatform") version "2.0.0" apply false
-    id("org.jetbrains.kotlin.plugin.compose") version "2.0.0" apply false
-    id("org.jetbrains.compose") version "1.6.10" apply false
-    id("io.github.gradle-nexus.publish-plugin") version "1.1.0"
-    id("com.diffplug.spotless") version "5.7.0"
-    id("org.jetbrains.kotlin.jvm") version "2.0.0" apply false
+    alias(libs.plugins.android.application) apply false
+    alias(libs.plugins.android.library) apply false
+    alias(libs.plugins.kotlin.mp) apply false
+    alias(libs.plugins.compose.compiler) apply false
+    alias(libs.plugins.jetbrains.compose) apply false
+    alias(libs.plugins.spotless)
 }
 
 subprojects {
-    repositories {
-        google()
-        mavenCentral()
+    apply {
+        plugin(rootProject.libs.plugins.spotless.get().pluginId)
     }
-
-    apply(plugin = "com.diffplug.spotless")
     spotless {
         kotlin {
             // target = "**/*.kt"
-            targetExclude("$buildDir/**/*.kt")
+            targetExclude("${layout.buildDirectory}/**/*.kt")
             targetExclude("bin/**/*.kt")
 
             ktlint("0.40.0")
@@ -27,5 +22,3 @@ subprojects {
         }
     }
 }
-
-apply(from = "$rootDir/scripts/publish-root.gradle")
