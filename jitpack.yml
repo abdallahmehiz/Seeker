@@ -3,5 +3,5 @@ jdk:
 env:
   RELEASE_VERSION: "2.0.1"
 install:
-  - ./gradlew seeker:jvmJar
+  - ./gradlew seeker:assembleRelease
   - ./gradlew seeker:publishJvmPublicationToMavenLocal
